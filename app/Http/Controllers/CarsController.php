@@ -8,6 +8,11 @@ use App\Http\Requests\CreateValidationRequest;
 
 class CarsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth', ['except' => 'index','show']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -45,14 +50,42 @@ class CarsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateValidationRequest $request)
+    public function store(Request $request)
     {
-        $request->validated();
+        // $request->validated();
+
+        //Methods we can use on request -> $test = $request->file('image')->getExtension()
+        //guesExtension()
+        //getMimeType()
+        //store()
+        //asStore()
+        //storePublicly()
+        //move()
+        //getClientOriginalName()
+        //getClientMimeType()
+        //guessClientExtension()
+        //getSize()
+        //getError()
+        //isValid()
+
+        $request->validate([
+            'name' => 'required',
+            'founded' => 'required|integer|min:0|max:2021',
+            'description' => 'required',
+            'image' => 'required|mimes:jpg,png,jpeg|max:5048'
+        ]);
+
+        $newImageName = time() . '-' . $request->file('image')->getClientOriginalName();
+        // dd($newImageName);
+
+        $request->image->move(public_path('images'), $newImageName);
 
         $car = Car::create([
             'name' => $request->input('name'),
             'founded' => $request->input('founded'),
             'description' => $request->input('description'),
+            'image_path' => $newImageName,
+            'user_id' => auth()->user()->id
         ]);
 
         return redirect(route('cars.index'));

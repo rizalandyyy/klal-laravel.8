@@ -9,23 +9,32 @@
         </div>
     </div>
 
+    @if (Auth::user())
     <div
-     class="pt-10">
-        <a href="cars/create" class="border-b-2 pb-2 border-dotted italic text-gray-500">
-            Add a new Car &rarr;
-        </a>
-    </div>
+    class="pt-10">
+       <a href="cars/create" class="border-b-2 pb-2 border-dotted italic text-gray-500">
+           Add a new Car &rarr;
+       </a>
+   </div>
+    @endif
+
+
+    {{-- {{ dd(Auth::user()) }} --}}
     {{-- {{ $cars->name }} --}}
     <div class="w-5/6 py-10">
         @foreach ($cars as $car)
         <div class="m-auto">
             <div class="float-right">
+                <img src="{{ asset('images/'.$car['image_path']) }}" alt="">
+                @if (isset(Auth::user()->id) && Auth::user()->id == $car['user_id'])
                 <a href="cars/{{ $car['id'] }}/edit">Edit</a>
                 <form action="/klal-laravel.8/cars/{{ $car['id'] }}" method="POST">
                     @csrf
                     @method('delete')
                     <button type="submit">Delete</button>
                 </form>
+                @endif
+
             </div>
             <span class="uppercase text-blue-500 font-bold text-xs italic">
                 founded: {{ $car['founded'] }}

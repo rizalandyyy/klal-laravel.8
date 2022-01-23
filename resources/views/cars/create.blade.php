@@ -10,8 +10,9 @@
     </div>
 
     <div class="flex justify-center pt-20">
-<form action="{{ route('cars.store') }}" method="POST">
+<form action="{{ route('cars.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
+    <input type="file" name="image">
     <input type="text" name="name" placeholder="Name" id="">
     <input type="text" name="founded" placeholder="Found" id="">
     <input type="text" name="description" placeholder="Deskripsi" id="">
